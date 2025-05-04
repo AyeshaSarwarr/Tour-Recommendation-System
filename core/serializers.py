@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Notification, Review, Tour, TourImage
+from .models import Notification, Review, Tour
 
 User = get_user_model()
 
@@ -44,33 +44,36 @@ class UserLoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Invalid credentials")
 
 
-class TourImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TourImage
-        fields = ['id', 'image', 'tour']
+# class TourImageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TourImage
+#         fields = ['id', 'image', 'tour']
 
-    def validate_image(self, value):
-        if not value:
-            raise serializers.ValidationError("Image file is required.")
-        return value
+#     def validate_image(self, value):
+#         if not value:
+#             raise serializers.ValidationError("Image file is required.")
+#         return value
 
 
 class TourSerializer(serializers.ModelSerializer):
-    gallery_images = TourImageSerializer(many=True, read_only=True)
-    main_image = serializers.ImageField(required=True)
+    tags = serializers.ListField(child=serializers.CharField(), required=False)
+    ai_keywords = serializers.ListField(child=serializers.CharField(), required=False)
 
     class Meta:
         model = Tour
-        fields = ['id', 'title', 'description', 'price_per_person', 'duration', 'location', 
-                  'company', 'main_image', 'gallery_images', 'availability', 'created_at']
+        fields = [
+            'id', 'title', 'description', 'price_per_person', 'duration',
+            'location', 'season', 'company', 'main_image', 'availability',
+            'min_group_size', 'max_group_size', 'tour_type', 'tags', 'ai_keywords', 'created_at'
+        ]
 
 
-from .models import TourPackage
+# from .models import TourPackage
 
-class TourPackageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TourPackage
-        fields = '__all__'
+# class TourPackageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TourPackage
+#         fields = '__all__'
 
 
 

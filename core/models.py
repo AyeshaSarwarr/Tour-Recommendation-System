@@ -152,6 +152,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from phonenumber_field.modelfields import PhoneNumberField
 
 # ✅ User Model (Tourist & Tourism Company)
 class User(AbstractUser):
@@ -180,13 +181,13 @@ class User(AbstractUser):
         return f"{self.username} ({self.get_user_type_display()})"
 
 # ✅ Tour Tag Model (New)
-class TourTag(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50, unique=True)  # e.g., "adventure", "luxury"
-    created_at = models.DateTimeField(auto_now_add=True)
+# class TourTag(models.Model):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     name = models.CharField(max_length=50, unique=True)  # e.g., "adventure", "luxury"
+#     created_at = models.DateTimeField(auto_now_add=True)
     
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 # ✅ Tour Model (Updated)
 class Tour(models.Model):
@@ -196,6 +197,11 @@ class Tour(models.Model):
         ('dj_night', 'DJ Night'),
         ('classical', 'Classical'),
     ]
+    SEASON_CHOICES = [
+        ('summer', 'Summer'),
+        ('winter', 'Winter'),
+        ('monsoon', 'Monsoon'),
+    ]
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
@@ -203,13 +209,14 @@ class Tour(models.Model):
     price_per_person = models.DecimalField(max_digits=10, decimal_places=2)  # Updated field
     duration = models.IntegerField(help_text="Duration in days", null=True, blank=True)
     location = models.CharField(max_length=255)
+    season = models.CharField(max_length=10, choices=SEASON_CHOICES, default='summer')
     company = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="company_tours")
     main_image = models.ImageField(upload_to="tours/main_images/")
     availability = models.IntegerField(help_text="Available spots" , null=True, blank=True)
     min_group_size = models.IntegerField(default=1)  # New field
     max_group_size = models.IntegerField(default=10)  # New field
     tour_type = models.CharField(max_length=20, choices=TOUR_TYPE_CHOICES, null=True, blank=True)  # New field
-    tags = models.ManyToManyField(TourTag, related_name="tours", blank=True)  # New field
+    tags = models.JSONField(default=list, blank=True)  # 🆕 No TourTag table, just save tags list directly
     ai_keywords = models.JSONField(default=list)  # For storing processed keywords
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -242,15 +249,15 @@ class UserTourPreference(models.Model):
     def __str__(self):
         return f"Preferences for {self.user.username}"
 
-# ✅ Tour Image Model
-class TourImage(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="gallery")
-    image = models.ImageField(upload_to="tours/gallery/")
-    # created_at = models.DateTimeField(auto_now_add=True)
+# # ✅ Tour Image Model
+# class TourImage(models.Model):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="gallery")
+#     image = models.ImageField(upload_to="tours/gallery/")
+#     # created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Image for {self.tour.title}"
+#     def __str__(self):
+#         return f"Image for {self.tour.title}"
     
 class TourGallery(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -259,36 +266,36 @@ class TourGallery(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)    
 
 # ✅ Tour Package Model
-class TourPackage(models.Model):
-    SEASON_CHOICES = [
-        ('summer', 'Summer'),
-        ('winter', 'Winter'),
-        ('monsoon', 'Monsoon'),
-    ]
+# class TourPackage(models.Model):
+#     SEASON_CHOICES = [
+#         ('summer', 'Summer'),
+#         ('winter', 'Winter'),
+#         ('monsoon', 'Monsoon'),
+#     ]
     
-    TOUR_TYPE_CHOICES = [
-        ('party', 'Party'),
-        ('family', 'Family'),
-        ('dj_night', 'DJ Night'),
-        ('classical', 'Classical'),
-    ]
+#     TOUR_TYPE_CHOICES = [
+#         ('party', 'Party'),
+#         ('family', 'Family'),
+#         ('dj_night', 'DJ Night'),
+#         ('classical', 'Classical'),
+#     ]
     
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    price_per_person = models.FloatField()  # Updated field
-    season = models.CharField(max_length=10, choices=SEASON_CHOICES)
-    availability = models.IntegerField()
-    company = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company_tour_packages")
-    location = models.CharField(max_length=255)
-    min_group_size = models.IntegerField(default=1)  # New field
-    max_group_size = models.IntegerField(default=10)  # New field
-    tour_type = models.CharField(max_length=20, choices=TOUR_TYPE_CHOICES, null=True, blank=True)  # New field
-    tags = models.ManyToManyField(TourTag, related_name="tour_packages", blank=True)  # New field
-    created_at = models.DateTimeField(auto_now_add=True)
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+#     title = models.CharField(max_length=255)
+#     description = models.TextField()
+#     price_per_person = models.FloatField()  # Updated field
+#     season = models.CharField(max_length=10, choices=SEASON_CHOICES)
+#     availability = models.IntegerField()
+#     company = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company_tour_packages")
+#     location = models.CharField(max_length=255)
+#     min_group_size = models.IntegerField(default=1)  # New field
+#     max_group_size = models.IntegerField(default=10)  # New field
+#     tour_type = models.CharField(max_length=20, choices=TOUR_TYPE_CHOICES, null=True, blank=True)  # New field
+#     tags = models.ManyToManyField(TourTag, related_name="tour_packages", blank=True)  # New field
+#     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.title
+#     def __str__(self):
+#         return self.title
 
 # ✅ Booking Model
 class Booking(models.Model):
@@ -300,10 +307,11 @@ class Booking(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
-    tour = models.ForeignKey(TourPackage, on_delete=models.CASCADE, related_name="bookings")
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="bookings")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     booking_date = models.DateTimeField(auto_now_add=True)
     number_of_people = models.IntegerField(default=1)  # New field
+    phone_number = PhoneNumberField(blank=True, region='PK')  # 'PK' for Pakistan, change as needed
 
     def __str__(self):
         return f"Booking by {self.user.email} for {self.tour.title}"
@@ -340,7 +348,7 @@ class Review(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
-    tour = models.ForeignKey(TourPackage, on_delete=models.CASCADE, related_name="reviews", null=True, blank=True)
+    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="reviews", null=True, blank=True)
     company = models.ForeignKey(User, on_delete=models.CASCADE, related_name="company_reviews", null=True, blank=True)
     rating = models.IntegerField()
     comment = models.TextField()

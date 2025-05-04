@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import NotificationSerializer, ReviewSerializer, UserSignupSerializer, UserLoginSerializer, TourSerializer, TourImageSerializer
-from .models import Notification, Review, Tour, TourImage
+from .serializers import NotificationSerializer, ReviewSerializer, UserSignupSerializer, UserLoginSerializer, TourSerializer
+from .models import Notification, Review, Tour, TourGallery
 from .permissions import IsTourist, IsTourismCompany
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics, permissions
@@ -89,17 +89,17 @@ class TourDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TourSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-# Tour Image Upload View
-class TourImageUploadView(generics.CreateAPIView):
-    queryset = TourImage.objects.all()
-    serializer_class = TourImageSerializer
-    parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [permissions.IsAuthenticated]
+# # Tour Image Upload View
+# class TourImageUploadView(generics.CreateAPIView):
+#     queryset = TourImage.objects.all()
+#     serializer_class = TourImageSerializer
+#     parser_classes = [MultiPartParser, FormParser]
+#     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        tour_id = self.request.data.get("tour")
-        tour = Tour.objects.get(id=tour_id)
-        serializer.save(tour=tour)
+#     def perform_create(self, serializer):
+#         tour_id = self.request.data.get("tour")
+#         tour = Tour.objects.get(id=tour_id)
+#         serializer.save(tour=tour)
 
 
 class UploadTourGalleryImageView(APIView):
@@ -132,32 +132,39 @@ class UploadTourGalleryImageView(APIView):
 
 
 
-from .models import TourPackage
-from .serializers import TourPackageSerializer
+class TourGalleryListView(APIView):
+    def get(self, request, tour_id):
+        images = TourGallery.objects.filter(tour_id=tour_id)
+        image_urls = [request.build_absolute_uri(image.image.url) for image in images]
+        return Response({'gallery': image_urls}, status=status.HTTP_200_OK)
 
-#  List all packages (Tourists & Companies)
-class TourPackageListView(generics.ListAPIView):
-    queryset = TourPackage.objects.all()
-    serializer_class = TourPackageSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-#  Create a tour package (Only Tourism Companies)
-class TourPackageCreateView(generics.CreateAPIView):
-    queryset = TourPackage.objects.all()
-    serializer_class = TourPackageSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
+# from .models import TourPackage
+# from .serializers import TourPackageSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(company=self.request.user)  # Assign logged-in company
+# #  List all packages (Tourists & Companies)
+# class TourPackageListView(generics.ListAPIView):
+#     queryset = TourPackage.objects.all()
+#     serializer_class = TourPackageSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
-#  Retrieve, Update, Delete a package (Only the creator can modify)
-class TourPackageDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TourPackage.objects.all()
-    serializer_class = TourPackageSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
+# #  Create a tour package (Only Tourism Companies)
+# class TourPackageCreateView(generics.CreateAPIView):
+#     queryset = TourPackage.objects.all()
+#     serializer_class = TourPackageSerializer
+#     permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
 
-    def get_queryset(self):
-        return TourPackage.objects.filter(company=self.request.user)
+#     def perform_create(self, serializer):
+#         serializer.save(company=self.request.user)  # Assign logged-in company
+
+# #  Retrieve, Update, Delete a package (Only the creator can modify)
+# class TourPackageDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = TourPackage.objects.all()
+#     serializer_class = TourPackageSerializer
+#     permission_classes = [permissions.IsAuthenticated, IsTourismCompany]
+
+#     def get_queryset(self):
+#         return TourPackage.objects.filter(company=self.request.user)
 
 
 

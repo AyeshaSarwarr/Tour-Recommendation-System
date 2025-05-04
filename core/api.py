@@ -7,7 +7,7 @@ from django.db.models import Q
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import decimal
-from .models import Tour, UserTourPreference, TourTag
+from .models import Tour, UserTourPreference
 import logging
 from rest_framework.permissions import AllowAny
 

@@ -10,7 +10,7 @@ const Recomendations = () => {
           <div className="content">
             <p className="category">Promotion</p>
             <h2>Explore Nature</h2>
-            <Link href="/book_tour" passHref>
+            <Link href="/packages" passHref>
               <button className="btn">View Packages</button>
             </Link>
           </div>
@@ -22,7 +22,7 @@ const Recomendations = () => {
           <div className="content">
             <p className="category">Promotion</p>
             <h2>Explore Cities</h2>
-            <Link href="/book_tour" passHref>
+            <Link href="/packages" passHref>
               <button className="btn">View Packages</button>
             </Link>
           </div>

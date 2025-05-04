@@ -1,8 +1,12 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 function Navbar() {
+    const router = useRouter();
   return (
+
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md h-16 px-10 flex items-center justify-between text-black">
       <div className="text-2xl font-bold">Travel</div>
       <nav>
@@ -33,7 +37,10 @@ function Navbar() {
           </li>
         </ul>
       </nav>
-      <button className="bg-[#ff6b6b] text-white px-4 py-2 rounded-full hover:opacity-90 transition">
+      <button 
+      className="bg-[#ff6b6b] text-white px-4 py-2 rounded-full hover:opacity-90 transition"
+      onClick={() => router.push("/login")}
+      >
         Get in Touch
       </button>
     </header>

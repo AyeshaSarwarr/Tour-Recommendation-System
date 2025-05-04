@@ -3,11 +3,21 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { AiOutlineUser, AiOutlineMail, AiOutlineLock } from "react-icons/ai";
+import {
+  AiOutlineUser,
+  AiOutlineMail,
+  AiOutlineLock,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
+
 import { FaCheckCircle, FaExclamationCircle, FaBuilding } from "react-icons/fa";
 
 const SignUp = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -43,11 +53,14 @@ const SignUp = () => {
     };
 
     try {
-      await axios.post("http://127.0.0.1:8000/api/signup/", payload);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/signup/`,
+        payload
+      );
       setMessage("Signup successful! Redirecting...");
       setTimeout(() => {
         router.push("/login");
-      }, 2000);
+      }, 100);
     } catch (err) {
       console.error("Signup error:", err);
       setError(
@@ -137,15 +150,52 @@ const SignUp = () => {
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                     {field.icon}
                   </span>
+
                   <input
-                    type={field.type}
+                    type={
+                      field.name === "password"
+                        ? showPassword
+                          ? "text"
+                          : "password"
+                        : field.name === "confirmPassword"
+                        ? showConfirmPassword
+                          ? "text"
+                          : "password"
+                        : field.type
+                    }
                     name={field.name}
                     placeholder={`Enter ${field.label.toLowerCase()}`}
                     value={formData[field.name]}
                     onChange={handleChange}
                     required
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-100 hover:bg-white placeholder:text-gray-400"
+                    className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-100 hover:bg-white placeholder:text-gray-400"
                   />
+
+                  {(field.name === "password" ||
+                    field.name === "confirmPassword") && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        field.name === "password"
+                          ? setShowPassword(!showPassword)
+                          : setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    >
+                      {field.name === "password" &&
+                        (showPassword ? (
+                          <AiOutlineEyeInvisible size={20} />
+                        ) : (
+                          <AiOutlineEye size={20} />
+                        ))}
+                      {field.name === "confirmPassword" &&
+                        (showConfirmPassword ? (
+                          <AiOutlineEyeInvisible size={20} />
+                        ) : (
+                          <AiOutlineEye size={20} />
+                        ))}
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -220,28 +270,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-// import React from "react";
-// import "@/app/signup/SignUp.css";
-
-// const Signup = () => {
-//   return (
-//     <div className="body">
-//       <div className="container">
-//         <h1 className="title">Travel</h1>
-
-//         <form className="signup-form">
-//           <input type="text" placeholder="Name" />
-//           <input type="email" placeholder="Email" />
-//           <input type="password" placeholder="Password" />
-//           <input type="password" placeholder="Confirm Password" />
-//           <button type="submit">Sign Up</button>
-//         </form>
-
-//         <p className="already-account">Already have an account?</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Signup;

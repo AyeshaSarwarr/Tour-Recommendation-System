@@ -93,16 +93,16 @@ class TourAdmin(admin.ModelAdmin):
     list_display = ('title', 'company', 'price_per_person', 'tour_type', 'location', 'availability')
     list_filter = ('tour_type', 'location')
     search_fields = ('title', 'description')
-    filter_horizontal = ('tags',)
+    # filter_horizontal = ('tags',)
     readonly_fields = ('created_at',)
 
 # Tour Package Admin
-class TourPackageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'price_per_person', 'season', 'tour_type', 'location', 'availability')
-    list_filter = ('season', 'tour_type', 'location')
-    search_fields = ('title', 'description')
-    filter_horizontal = ('tags',)
-    readonly_fields = ('created_at',)
+# class TourPackageAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'price_per_person', 'season', 'tour_type', 'location', 'availability')
+#     list_filter = ('season', 'tour_type', 'location')
+#     search_fields = ('title', 'description')
+#     filter_horizontal = ('tags',)
+#     readonly_fields = ('created_at',)
 
 # Company Profile Admin
 class CompanyProfileAdmin(admin.ModelAdmin):
@@ -123,9 +123,9 @@ class TourTagAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
 
 
-class TourImageAdmin(admin.ModelAdmin):
-    list_display = ('tour', 'id')
-    search_fields = ('tour__title',)
+# class TourImageAdmin(admin.ModelAdmin):
+#     list_display = ('tour', 'id')
+#     search_fields = ('tour__title',)
 
 # Tour Gallery Admin
 class TourGalleryAdmin(admin.ModelAdmin):
@@ -165,11 +165,11 @@ class NotificationAdmin(admin.ModelAdmin):
 # Register all models
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Tour, TourAdmin)
-admin.site.register(TourPackage, TourPackageAdmin)
+# admin.site.register(TourPackage, TourPackageAdmin)
 admin.site.register(CompanyProfile, CompanyProfileAdmin)
 admin.site.register(UserTourPreference, UserTourPreferenceAdmin)
-admin.site.register(TourTag, TourTagAdmin)
-admin.site.register(TourImage, TourImageAdmin)
+# admin.site.register(TourTag, TourTagAdmin)
+# admin.site.register(TourImage, TourImageAdmin)
 admin.site.register(TourGallery, TourGalleryAdmin)
 admin.site.register(Booking, BookingAdmin)
 admin.site.register(Payment, PaymentAdmin)

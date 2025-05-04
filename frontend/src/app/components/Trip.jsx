@@ -21,7 +21,7 @@ const Trip = () => {
             exploration. Get ready to challenge yourself and create memories
             that will last a lifetime!
           </p>
-          <Link href="/book_tour" passHref>
+          <Link href="/packages" passHref>
             <button className="bttn">View Packages</button>
           </Link>
         </div>

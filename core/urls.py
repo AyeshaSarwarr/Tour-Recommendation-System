@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import CreateReviewView, MarkNotificationReadView,AllReviewsListView, TourReviewsListView, UserNotificationsView, UserSignupView, UserLoginView,protected_view
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import TourListCreateView, TourDetailView, TourImageUploadView, UploadTourGalleryImageView
-from .views import TourPackageListView, TourPackageCreateView, TourPackageDetailView
+from .views import TourListCreateView,TourGalleryListView, TourDetailView, UploadTourGalleryImageView
+# from .views import TourPackageListView, TourPackageCreateView, TourPackageDetailView
 from .views import CreateBookingView, TouristBookingListView, CompanyBookingListView, UpdateBookingStatusView
 from .views import PaymentCreateView, PaymentUpdateView, PaymentDetailView
 # from .api import recommend
@@ -25,13 +25,14 @@ urlpatterns = [
 
     path('tours/', TourListCreateView.as_view(), name="tour-list-create"),
     path('tours/<uuid:pk>/', TourDetailView.as_view(), name="tour-detail"),
-    path('tours/upload-image/', TourImageUploadView.as_view(), name="tour-image-upload"),
+    # path('tours/upload-image/', TourImageUploadView.as_view(), name="tour-image-upload"),
 
     path('tours/<uuid:tour_id>/upload-images/', UploadTourGalleryImageView.as_view(), name='upload-tour-images'),
+    path('tours/<uuid:tour_id>/gallery/', TourGalleryListView.as_view(), name='tour-gallery'),
     
-    path('tour-packages/', TourPackageListView.as_view(), name='tour-package-list'),
-    path('tour-packages/create/', TourPackageCreateView.as_view(), name='tour-package-create'),
-    path('tour-packages/<uuid:pk>/', TourPackageDetailView.as_view(), name='tour-package-detail'),
+    # path('tour-packages/', TourPackageListView.as_view(), name='tour-package-list'),
+    # path('tour-packages/create/', TourPackageCreateView.as_view(), name='tour-package-create'),
+    # path('tour-packages/<uuid:pk>/', TourPackageDetailView.as_view(), name='tour-package-detail'),
     
     path('bookings/create/', CreateBookingView.as_view(), name='create-booking'),
     path('bookings/', TouristBookingListView.as_view(), name='tourist-bookings'),

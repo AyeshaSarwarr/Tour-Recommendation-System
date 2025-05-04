@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import FooterSection from "@/app/components/FooterSection";
 import Navbar from "@/app/components/Navbar";
-import "@/app/book_tour/book_tour.css";
-import PlanTour from "@/app/components/plan_tour"; // ✅ Capitalization fix
+import "@/app/packages/packages.css";
 
 const Booktour = () => {
   const router = useRouter();
@@ -111,9 +110,7 @@ const Booktour = () => {
             )}
 
             {/* Booking Form */}
-            <div className="bookPart bg-white p-6 shadow-lg rounded-lg my-10 mx-4 md:mx-10">
-              <PlanTour />
-            </div>
+            
           </div>
         </div>
 
