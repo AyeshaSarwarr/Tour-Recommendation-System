@@ -48,39 +48,50 @@ const Booktour = () => {
           </div>
 
           {/* Tour Cards */}
-          <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {tours.map((tour, index) => (
-              <div
-                key={index}
-                onClick={() => router.push(`/tour_info/${tour.id}`)}
-                className="cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
-              >
-                <img
-                  loading="lazy"
-                  src={tour.main_image}
-                  alt={tour.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">
-                    {tour.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-4">
-                    Book now to experience lush valleys, lakes, and majestic
-                    mountains.
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-red-600 font-bold text-lg">
-                      ${tour.price}
-                    </span>
-                    <span className="text-yellow-500 font-medium">
-                      ⭐ {tour.rating}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+{/* Tour Cards */}
+<div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {tours.length === 0 ? (
+    <div className="col-span-full text-center py-20">
+      <h2 className="text-2xl font-semibold text-gray-600">
+        No Packages available for now.
+      </h2>
+      <p className="text-gray-400 mt-2">
+        Please check back later.
+      </p>
+    </div>
+  ) : (
+    tours.map((tour, index) => (
+      <div
+        key={index}
+        onClick={() => router.push(`/tour_info/${tour.id}`)}
+        className="cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+      >
+        <img
+          loading="lazy"
+          src={tour.main_image}
+          alt={tour.title}
+          className="w-full h-48 object-cover"
+        />
+        <div className="p-4">
+          <h3 className="text-lg font-bold text-gray-800 mb-2">
+            {tour.title}
+          </h3>
+          <p className="text-gray-500 text-sm mb-4">
+            Book now to experience lush valleys, lakes, and majestic mountains.
+          </p>
+          <div className="flex justify-between items-center">
+            <span className="text-red-600 font-bold text-lg">
+              ${tour.price}
+            </span>
+            <span className="text-yellow-500 font-medium">
+              ⭐ {tour.rating}
+            </span>
           </div>
+        </div>
+      </div>
+    ))
+  )}
+</div>
         </div>
 
         <FooterSection />
